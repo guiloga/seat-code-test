@@ -57,6 +57,11 @@ class TestMowerScheduleConfig:
     def test_create_from_dict(self, config_data):
         config = MowerScheduleConfig.create_from_dict(config_data)
         assert isinstance(config, MowerScheduleConfig)
+    
+    @pytest.mark.usefixtures('config_data')
+    def test_as_dict(self, config_data):
+        schedule_config = MowerScheduleConfig.create_from_dict(config_data)
+        assert schedule_config.as_dict == config_data
 
 
 class TestApplicationConfig:
@@ -65,14 +70,19 @@ class TestApplicationConfig:
         return {
             'controller_class': 'SimpleGreenGrassController',
             'palete': { 'dimension': {'rows': 2, 'cols': 2} },
-            'initial_position': {'x': 0, 'y': 0},
             'mode': 'interactive',
+            'schedules': None,
         }
 
     @pytest.mark.usefixtures('config_data')
     def test_create_from_dict(self, config_data):
         app_config = ApplicationConfig.create_from_dict(config_data)
         assert isinstance(app_config, ApplicationConfig)
+    
+    @pytest.mark.usefixtures('config_data')
+    def test_as_dict(self, config_data):
+        app_config = ApplicationConfig.create_from_dict(config_data)
+        assert app_config.as_dict == config_data
 
     def test_read_config_from_yaml(self):
         config_data = ApplicationConfig.read_config_from_yaml()
@@ -80,7 +90,9 @@ class TestApplicationConfig:
 
     def test_read_config_from_yaml_error(self):
         with pytest.raises(ConfigPathError):
-            config_data = ApplicationConfig.read_config_from_yaml('/app.yml')
+            ApplicationConfig.read_config_from_yaml('/app.yml')
+
+        assert ConfigPathError().__str__()
 
     def test_get_controller_class_by_name(self):
         controller_type = ApplicationConfig.get_controller_class_by_name(

@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Tuple
 from uuid import UUID
-import uuid
+
+from src.domain.exceptions import InvalidCommandError
 
 
 class ApplicationController(ABC):
@@ -17,13 +18,11 @@ class ApplicationController(ABC):
         self.__uuid = uuid_
 
     @abstractmethod
-    def cmd_manager(self, cmd: str, *args, **kwargs):
-        pass
+    def cmd_manager(self, cmd: str, *args, **kwargs): pass
 
     def validate_cmd(self, cmd: str):
         if cmd not in self.CLI:
-            # todo: customize that exception
-            raise Exception()
+            raise InvalidCommandError(cmd, self.CLI)
 
 
 class ConfigObject(ABC):
@@ -32,10 +31,8 @@ class ConfigObject(ABC):
     """
     @classmethod
     @abstractmethod
-    def create_from_dict(cls, config_data: dict):
-        pass
+    def create_from_dict(cls, config_data: dict): pass
 
     @property
     @abstractmethod
-    def as_dict(self) -> dict:
-        pass
+    def as_dict(self) -> dict: pass

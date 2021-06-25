@@ -45,10 +45,6 @@ class CardinalMoveMapping:
         Cardinal.S: (0, -1),
         Cardinal.W: (-1, 0)
     }
-    
-    @property
-    def name(self):
-        return self._name_
 
     @classmethod
     def get_move_offset(cls, cardinal: Cardinal) -> Point:
@@ -82,7 +78,7 @@ class MowerScheduleConfig(ConfigObject):
         self.initial_position = initial_position
         self.orientation = orientation
         self.commands = commands
-    
+
     @classmethod
     def create_from_dict(cls, config_data: dict):
         return cls(
@@ -92,7 +88,7 @@ class MowerScheduleConfig(ConfigObject):
             orientation=getattr(Cardinal, config_data['orientation']),
             commands=[cmd for cmd in config_data['commands']],
         )
-    
+
     @property
     def as_dict(self) -> dict:
         return dict(
@@ -158,17 +154,15 @@ class ApplicationConfig(ConfigObject):
     def as_dict(self) -> dict:
         return dict(
             controller_class=self.controller_class.__name__,
-            palete_dimension={
-                'palete': {
-                    'dimension': {
-                        'rows': self.palete_dimension[0],
-                        'cols': self.palete_dimension[1]
-                    }
+            palete={
+                'dimension': {
+                    'rows': self.palete_dimension[0],
+                    'cols': self.palete_dimension[1]
                 }
             },
             mode=self.mode,
-            schedules=[sch.as_dict for sch in self.schedules], )
-        
+            schedules=[sch.as_dict for sch in self.schedules] if self.schedules else None, )
+
 
 def root_dir():
     return os.path.dirname(

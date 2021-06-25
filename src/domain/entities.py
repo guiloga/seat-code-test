@@ -62,12 +62,3 @@ class Palete:
                 if (i, j) == point.coords:
                     return False
         return True
-
-    def draw_grid(self, side: int = 3, mower: Mower = None, ):
-        # TODO: refactor this
-        if not mower:
-            for _ in range(self._rows):
-                print(("+" + "- " * side) * self._cols + "+")
-            for _ in range(side-1):
-                print(("|" + "  " * side) * self._cols + "|")
-        print(("+" + "- " * side) * self._cols + "+")

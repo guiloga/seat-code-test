@@ -1,3 +1,4 @@
+from src.domain.exceptions import VoidScheduleError
 from uuid import uuid4
 import logging
 from typing import Type, Optional
@@ -26,6 +27,8 @@ class SimpleGreenGrassController(ApplicationController):
         self._palete = palete
         self._schedule = schedule
         self._finished = False
+        self._is_outside_of_palete = False
+
         LOGGER.info(f"[{self.uuid}] INIT position=%s orientation=%s" %
                     (self._mower.initial_position, self._mower.orientation.name))
     
@@ -34,6 +37,15 @@ class SimpleGreenGrassController(ApplicationController):
         inst.uuid = uuid4()
         LOGGER.info(f"[{inst.uuid}] Started a new application controller type '{cls.__name__}'")
         return inst
+
+    @property
+    def finished(self):
+        return self._finished
+    
+    def finish(self):
+        self._finished = True
+        LOGGER.info(f"[{self.uuid}] Controller finished at position=%s orientation=%s" %
+                    (self._mower.position, self._mower.orientation.name))
 
     def cmd_manager(self, cmd, *args, **kwargs):
         LOGGER.info(f"[{self.uuid}] CMD => '{cmd}'")
@@ -52,7 +64,10 @@ class SimpleGreenGrassController(ApplicationController):
             self._mower.position.coords[1] + offset.coords[1])
         
         if self._palete.is_outside(self._mower.position):
+            self._is_outside_of_palete = True
             LOGGER.info(f"[{self.uuid}] ¡¡¡ Current position is outside of Palete !!!")
+        else:
+            self._is_outside_of_palete = False
     
     def spin(self, to: str):
         value = self._mower.orientation.value + self.spin_mapper.get_cardinal_offset(to)
@@ -65,16 +80,12 @@ class SimpleGreenGrassController(ApplicationController):
         self._mower.orientation = Cardinal(cardinal_value)
 
     def run_schedule(self):
-        LOGGER.info(f"[{self.uuid}] Running scheduled commands '%s' .." %
-                    ''.join(self._schedule.commands))
-
         if self._schedule:
+            LOGGER.info(f"[{self.uuid}] Running scheduled commands '%s' .." %
+                    ''.join(self._schedule.commands))
             for cmd in self._schedule.commands:
                 self.cmd_manager(cmd)
         else:
-            # todo: customize that exception
-            raise Exception()
+            raise VoidScheduleError()
 
-        self._finished = True
-        LOGGER.info(f"[{self.uuid}] Controller schedule finished: position=%s orientation=%s" %
-                    (self._mower.position, self._mower.orientation.name))
+        self.finish()

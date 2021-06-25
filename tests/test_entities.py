@@ -16,6 +16,7 @@ class TestPalete:
         palete = Palete(dimension)
         assert isinstance(palete, Palete)
         assert palete.rows == 2 and palete.cols == 2
+        assert len(palete.grid[0]), len(palete.grid[1]) == (3, 3)
 
     def test_is_outside(self):
         palete = Palete((3, 3))
