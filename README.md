@@ -14,7 +14,7 @@ python3.9 -m pip install virtualenv
 python3.9 -m virtualenv ~/.virtualenvs/seat-code-test
 
 # Activate and install dependencies
-source ~/.virtualenvs/seat-code-test/bin/active
+source ~/.virtualenvs/seat-code-test/bin/activate
 pip install -r requirements.txt
 ```
 
