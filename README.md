@@ -1,7 +1,7 @@
 # SEAT-CODE Mower Test
 **edited at June 25, 2021**
 
-This is the seat-code Mower App (build by [Guillem López Garcia](https://github.com/guiloga)).
+This is the seat-code Mower App (build by [Guillem López Garcia](https://github.com/guiloga)). :stuck_out_tongue_winking_eye:
 
 ## Setup
 Project is built with python3, I recommend building it with the latest stable python version: [**python3.9**](https://www.python.org/downloads/release/python-390/).
